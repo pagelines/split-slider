@@ -9,6 +9,9 @@ Want to start splitting? <strong>Grab it while it lasts! :)</strong>
 
 Please do not leave a review as a support question, they are for reviews. I am not notified of these reviews, and I have no way to respond to you. Please <strong>do not email me for support</strong>, because you will not receive a reply. If you need assistance, click the link in the box below - this link leads you to the forums where you can get support. <strong>Thanks!</strong>
 
+<h3>Thanks to:</h3>
+Split Slider is a port of <strong><i>codrops</i></strong>' <a href="http://tympanus.net/codrops/2012/06/05/fullscreen-slit-slider-with-jquery-and-css3/">Full Screen Slit Slider</a>
+
 == Changelog ==
 
 = 1.0 =

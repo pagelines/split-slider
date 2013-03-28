@@ -253,30 +253,30 @@ class SplitSlider extends PageLinesSection {
 			'count_start' => 2,
 			'count_number'  => 15,
 			'default'  => '2',
-			'inputlabel'  => __( 'Number of Images to Configure', 'pagelines' ),
-			'title'   => __( 'Number of images', 'pagelines' ),
-			'shortexp'   => __( 'Enter the number of Split Slider slides. <strong>Minimum is 2</strong>', 'pagelines' ),
-			'exp'    => __( "This number will be used to generate slides and option setup. For best results, please use images with the same dimensions!", 'pagelines' ),
+			'inputlabel'  => __( 'Number of Images to Configure', 'SplitSlider' ),
+			'title'   => __( 'Number of images', 'SplitSlider' ),
+			'shortexp'   => __( 'Enter the number of Split Slider slides. <strong>Minimum is 2</strong>', 'SplitSlider' ),
+			'exp'    => __( "This number will be used to generate slides and option setup. For best results, please use images with the same dimensions!", 'SplitSlider' ),
 		);
 
 		$array['split_slider_autoplay']  = array(
 			'default'       => 'y',
 			'type'           => 'select',
 			'selectvalues'     => array(
-				'y' => array( 'name' => __( 'Yes'   , 'pagelines' )),
-				'n' => array( 'name' => __( 'No'   , 'pagelines' ))
+				'y' => array( 'name' => __( 'Yes'   , 'SplitSlider' )),
+				'n' => array( 'name' => __( 'No'   , 'SplitSlider' ))
 			),
-			'inputlabel'  =>  __('Autoplay Split Slider? (Default is "Yes")', 'pagelines'),
+			'inputlabel'  =>  __('Autoplay Split Slider? (Default is "Yes")', 'SplitSlider'),
 			'title'      => __( 'Autoplay', 'pagelines' ),
-			'shortexp'      => __( 'Do you want Split Slider to autoplay?', 'pagelines' )
+			'shortexp'      => __( 'Do you want Split Slider to autoplay?', 'SplitSlider' )
 		);
 
 		$array['split_slider_speed']  = array(
 			'default'       => 'y',
 			'type'           => 'text',
-			'inputlabel'  =>  __('Speed of animation? (Default is "1200")', 'pagelines'),
-			'title'      => __( 'Speed', 'pagelines' ),
-			'shortexp'      => __( 'How fast should Split Slider animate?', 'pagelines' )
+			'inputlabel'  =>  __('Speed of animation? (Default is "1200")', 'SplitSlider'),
+			'title'      => __( 'Speed', 'SplitSlider' ),
+			'shortexp'      => __( 'How fast should Split Slider animate?', 'SplitSlider' )
 		);
 
 		global $post_ID;
@@ -292,53 +292,53 @@ class SplitSlider extends PageLinesSection {
 				'selectvalues' => array(
 
 					'split_slider_image_'.$i  => array(
-						'inputlabel'  => __( 'Slide Image', 'pagelines' ),
+						'inputlabel'  => __( 'Slide Image', 'SplitSlider' ),
 						'type'   => 'image_upload',
-						'title'   => __( 'Slide Image ', 'pagelines' ) . $i,
-						'shortexp'   => __( 'Upload an image...', 'pagelines' )
+						'title'   => __( 'Slide Image ', 'SplitSlider' ) . $i,
+						'shortexp'   => __( 'Upload an image...', 'SplitSlider' )
 
 					),
 					'split_slider_head_'.$i  => array(
-						'inputlabel' => __( 'Slide Heading', 'pagelines' ),
+						'inputlabel' => __( 'Slide Heading', 'SplitSlider' ),
 						'type'   => 'text',
-						'title'   => __( 'Slide Heading ', 'pagelines' ) . $i,
-						'shortexp'   => __( 'Add a heading text...', 'pagelines' )
+						'title'   => __( 'Slide Heading ', 'SplitSlider' ) . $i,
+						'shortexp'   => __( 'Add a heading text...', 'SplitSlider' )
 					),
 					'split_slider_head_color_'.$i  => array(
-						'inputlabel' => __( 'Color', 'pagelines' ),
+						'inputlabel' => __( 'Color', 'SplitSlider' ),
 						'type'   => 'colorpicker'
 					),
 					'split_slider_text_'.$i  => array(
-						'inputlabel' => __( 'Slide Text', 'pagelines' ),
+						'inputlabel' => __( 'Slide Text', 'SplitSlider' ),
 						'type'   => 'text',
-						'title'   => __( 'Slide Text ', 'pagelines' ) . $i,
-						'shortexp'   => __( 'Add a text...', 'pagelines' )
+						'title'   => __( 'Slide Text ', 'SplitSlider' ) . $i,
+						'shortexp'   => __( 'Add a text...', 'SplitSlider' )
 					),
 					'split_slider_text_color_'.$i  => array(
-						'inputlabel' => __( 'Color', 'pagelines' ),
+						'inputlabel' => __( 'Color', 'SplitSlider' ),
 						'type'   => 'colorpicker'
 					),
 					'split_slider_subtext_'.$i  => array(
-						'inputlabel' => __( 'Slide Subtext', 'pagelines' ),
+						'inputlabel' => __( 'Slide Subtext', 'SplitSlider' ),
 						'type'   => 'text',
-						'title'   => __( 'Slide Subtext ', 'pagelines' ) . $i,
-						'shortexp'   => __( 'Add a subtext...', 'pagelines' )
+						'title'   => __( 'Slide Subtext ', 'SplitSlider' ) . $i,
+						'shortexp'   => __( 'Add a subtext...', 'SplitSlider' )
 					),
 					'split_slider_subtext_color_'.$i  => array(
-						'inputlabel' => __( 'Color', 'pagelines' ),
+						'inputlabel' => __( 'Color', 'SplitSlider' ),
 						'type'   => 'colorpicker'
 					),
 				),
-				'title'   => __( 'Split Slider Slide ', 'pagelines' ) . $i,
-				'shortexp'   => __( 'Setup options for slide number ', 'pagelines' ) . $i,
-				'exp'   => __( 'For best results all images in the slider should have the same dimensions.', 'pagelines' )
+				'title'   => __( 'Split Slider Slide ', 'SplitSlider' ) . $i,
+				'shortexp'   => __( 'Setup options for slide number ', 'SplitSlider' ) . $i,
+				'exp'   => __( 'For best results all images in the slider should have the same dimensions.', 'SplitSlider' )
 			);
 
 		}
 
 		$metatab_settings = array(
 			'id'   => 'split_slider_options',
-			'name'   => __( 'Split Slider', 'pagelines' ),
+			'name'   => __( 'Split Slider', 'SplitSlider' ),
 			'icon'   => $this->icon,
 			'clone_id' => $settings['clone_id'],
 			'active' => $settings['active']

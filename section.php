@@ -4,10 +4,10 @@
 	Author: Aleksander Hansson
 	Author URI: http://ahansson.com
 	Demo: http://splitslider.ahansson.com
-	Version: 1.0
+	Version: 1.0.1
 	Description: Split Slider is a fully responsive slider that supports up to 15 slides with your images and custom text.
 	Class Name: SplitSlider
-	Workswith: main
+	Workswith: main, templates
 */
 
 /**
@@ -113,8 +113,11 @@ class SplitSlider extends PageLinesSection {
 
 	function section_template() {
 
-		?>
-			<div id="splitSlider" class="sl-slider-wrapper">
+		$slider_height = ( ploption( 'split_slider_height', $this->oset ) ) ? ploption( 'split_slider_height', $this->oset ) : '600';
+
+		printf('<div id="splitSlider" class="sl-slider-wrapper" style="height:%spx;">', $slider_height );
+		
+			?>	
 				<div class="sl-slider">
 					<?php
 
@@ -272,11 +275,19 @@ class SplitSlider extends PageLinesSection {
 		);
 
 		$array['split_slider_speed']  = array(
-			'default'       => 'y',
+			'default'       => '',
 			'type'           => 'text',
 			'inputlabel'  =>  __('Speed of animation? (Default is "1200")', 'SplitSlider'),
 			'title'      => __( 'Speed', 'SplitSlider' ),
 			'shortexp'      => __( 'How fast should Split Slider animate?', 'SplitSlider' )
+		);
+
+		$array['split_slider_height']  = array(
+			'default'       => '400',
+			'type'           => 'text',
+			'inputlabel'  =>  __('Height of Split Slider? (Default is "400")', 'SplitSlider'),
+			'title'      => __( 'Height', 'SplitSlider' ),
+			'shortexp'      => __( 'Input the height of the Split Slider', 'SplitSlider' )
 		);
 
 		global $post_ID;

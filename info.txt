@@ -15,5 +15,9 @@ Split Slider is a port of <strong><i>codrops</i></strong>' <a href="https://gith
 
 == Changelog ==
 
+= 1.1 =
+* Fixed bug that made it not show up in the templates area
+* Added height option
+
 = 1.0 =
 * Initial Release

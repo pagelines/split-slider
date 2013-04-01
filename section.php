@@ -4,7 +4,7 @@
 	Author: Aleksander Hansson
 	Author URI: http://ahansson.com
 	Demo: http://splitslider.ahansson.com
-	Version: 1.0.1
+	Version: 1.1
 	Description: Split Slider is a fully responsive slider that supports up to 15 slides with your images and custom text.
 	Class Name: SplitSlider
 	Workswith: main, templates

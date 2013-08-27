@@ -4,28 +4,17 @@
 	Author: Aleksander Hansson
 	Author URI: http://ahansson.com
 	Demo: http://splitslider.ahansson.com
-	Version: 1.2
 	Description: Split Slider is a fully responsive slider that supports up to 15 slides with your images and custom text.
-	Class Name: SplitSlider
+	Class Name: SplitSliderShortWidth
 	Workswith: main, templates
 	V3: true
-	Filter: full-width
 */
 
-/**
- * PageLines Split Slider
- *
- * @package PageLines Framework
- * @author Aleksander Hansson
- */
-
-
-
-class SplitSlider extends PageLinesSection {
+class SplitSliderShortWidth extends PageLinesSection {
 
 	var $default_limit = 2;
 
-	function section_styles() {
+	function section_styles( ) {
 
 		wp_enqueue_script( 'jquery' );
 
@@ -39,6 +28,10 @@ class SplitSlider extends PageLinesSection {
 	}
 
 	function section_head( ) {
+
+		$clone_id = $this->get_the_id();
+
+		$prefix = ($clone_id != '') ? '-clone-'.$clone_id : '';
 
 		$speed = ( $this->opt( 'split_slider_speed', $this->oset ) ) ? $this->opt( 'split_slider_speed', $this->oset ) : '1200';
 
@@ -54,8 +47,8 @@ class SplitSlider extends PageLinesSection {
 
 					var Page = (function() {
 
-						var $nav = $( '#nav-dots > span' ),
-							slitslider = $( '#splitSlider' ).slitslider( {
+						var $nav = $( '#nav-dots<?php echo $prefix; ?> > span' ),
+							slitslider = $( '#splitSlider<?php echo $prefix; ?>' ).slitslider( {
 								// transitions speed
 								speed : <?php echo $speed; ?>,
 								// maximum possible angle
@@ -115,9 +108,13 @@ class SplitSlider extends PageLinesSection {
 
 	function section_template() {
 
+		$clone_id = $this->get_the_id();
+
+		$prefix = ($clone_id != '') ? '-clone-'.$clone_id : '';
+
 		$slider_height = ( $this->opt( 'split_slider_height', $this->oset ) ) ? $this->opt( 'split_slider_height', $this->oset ) : '600';
 
-		printf('<div id="splitSlider" class="sl-slider-wrapper" style="height:%spx;">', $slider_height );
+		printf('<div id="splitSlider%s" class="sl-slider-wrapper" style="height:%spx;">',$prefix, $slider_height );
 
 			?>
 				<div class="sl-slider">
@@ -190,7 +187,7 @@ class SplitSlider extends PageLinesSection {
 
 							?>
 
-								<nav id="nav-dots" class="nav-dots">
+								<nav id="nav-dots<?php echo $prefix; ?>" class="nav-dots">
 									<?php
 										echo $nav_dots;
 									?>
@@ -303,7 +300,7 @@ class SplitSlider extends PageLinesSection {
 
 		$oset = array( 'post_id' => $post_ID, 'clone_id' => $settings['clone_id'], 'type' => $settings['type'] );
 
-		$slides = ( $this->opt( 'split_slider_slides', $oset ) ) ? $this->opt( 'split_slider_slides', $oset ) : $this->default_limit;
+		$slides = ( $this->opt( 'split_slider_slides', $this->oset ) ) ? $this->opt( 'split_slider_slides', $oset ) : $this->default_limit;
 
 		for ( $i = 1; $i <= $slides; $i++ ) {
 

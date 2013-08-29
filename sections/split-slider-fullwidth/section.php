@@ -6,9 +6,8 @@
 	Demo: http://splitslider.ahansson.com
 	Description: Split Slider is a fully responsive slider that supports up to 15 slides with your images and custom text.
 	Class Name: SplitSlider
-	Workswith: main, templates
 	V3: true
-	Filter: full-width
+	Filter: full-width, slider
 */
 
 /**

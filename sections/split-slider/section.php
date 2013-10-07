@@ -31,7 +31,7 @@ class SplitSliderShortWidth extends PageLinesSection {
 
 		$clone_id = $this->get_the_id();
 
-		$prefix = ($clone_id != '') ? '-clone-'.$clone_id : '';
+		$prefix = ($clone_id) ? '-clone-'.$clone_id : '';
 
 		$speed = ( $this->opt( 'split_slider_speed', $this->oset ) ) ? $this->opt( 'split_slider_speed', $this->oset ) : '1200';
 
@@ -110,7 +110,7 @@ class SplitSliderShortWidth extends PageLinesSection {
 
 		$clone_id = $this->get_the_id();
 
-		$prefix = ($clone_id != '') ? '-clone-'.$clone_id : '';
+		$prefix = ($clone_id) ? '-clone-'.$clone_id : '';
 
 		$slider_height = ( $this->opt( 'split_slider_height', $this->oset ) ) ? $this->opt( 'split_slider_height', $this->oset ) : '600';
 
@@ -185,11 +185,8 @@ class SplitSliderShortWidth extends PageLinesSection {
 						} else {
 							echo $output;
 
-							?>
-
-								<nav id="nav-dots<?php echo $prefix; ?>" class="nav-dots">
-									<?php
-										echo $nav_dots;
+								printf('<nav id="nav-dots%s" class="nav-dots">', $prefix);
+									echo $nav_dots;
 									?>
 								</nav>
 
@@ -207,6 +204,10 @@ class SplitSliderShortWidth extends PageLinesSection {
 	}
 
 	function do_defaults() {
+
+		$clone_id = $this->get_the_id();
+
+		$prefix = ($clone_id) ? '-clone-'.$clone_id : '';
 
 		printf( '<div class="sl-slide" data-orientation="horizontal" data-slice1-rotation="-5" data-slice2-rotation="10" data-slice1-scale="2" data-slice2-scale="1"><div class="sl-slide-inner"><div class="bg-img" style="background-image: url(%s);"></div><h2>%s</h2><blockquote><p>%s</p><cite>%s</cite></blockquote></div></div>',
 			$this->base_url.'/img/1.png',
@@ -234,7 +235,7 @@ class SplitSliderShortWidth extends PageLinesSection {
 		);
 
 		?>
-			<nav id="nav-dots" class="nav-dots">
+			<nav id="nav-dots<?php echo $prefix; ?>" class="nav-dots">
 				<span class="nav-dot-current"></span>
 				<span></span>
 				<span></span>

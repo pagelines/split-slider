@@ -12,8 +12,6 @@
 
 class SplitSlider extends PageLinesSection {
 
-	var $default_limit = 2;
-
 	function section_styles( ) {
 
 		wp_enqueue_script( 'jquery' );
@@ -24,7 +22,6 @@ class SplitSlider extends PageLinesSection {
 
 		wp_enqueue_script( 'jquery-ba-cond', $this->base_url.'/js/jquery.ba-cond.min.js' );
 
-
 	}
 
 	function section_head( ) {
@@ -33,9 +30,9 @@ class SplitSlider extends PageLinesSection {
 
 		$prefix = ($clone_id) ? '-clone-'.$clone_id : '';
 
-		$speed = ( $this->opt( 'split_slider_speed', $this->oset ) ) ? $this->opt( 'split_slider_speed', $this->oset ) : '1200';
+		$speed = ( $this->opt( 'split_slider_speed' ) ) ? $this->opt( 'split_slider_speed' ) : '1200';
 
-		if ( $this->opt( 'split_slider_autoplay', $this->oset ) == 'n' ) {
+		if ( $this->opt( 'split_slider_autoplay' ) == 'n' ) {
 			$autoplay = 'false';
 		} else {
 			$autoplay = 'true';
@@ -43,12 +40,12 @@ class SplitSlider extends PageLinesSection {
 
 		?>
 			<script type="text/javascript">
-				jQuery(document).ready(function($){
+				jQuery(document).ready(function(){
 
 					var Page = (function() {
 
-						var $nav = $( '#nav-dots<?php echo $prefix; ?> > span' ),
-							slitslider = $( '#splitSlider<?php echo $prefix; ?>' ).slitslider( {
+						var nav = jQuery( '#nav-dots<?php echo $prefix; ?> > span' ),
+							slitslider = jQuery( '#splitSlider<?php echo $prefix; ?>' ).slitslider( {
 								// transitions speed
 								speed : <?php echo $speed; ?>,
 								// maximum possible angle
@@ -59,8 +56,8 @@ class SplitSlider extends PageLinesSection {
 								autoplay : <?php echo $autoplay; ?>,
 								onBeforeChange : function( slide, pos ) {
 
-									$nav.removeClass( 'nav-dot-current' );
-									$nav.eq( pos ).addClass( 'nav-dot-current' );
+									nav.removeClass( 'nav-dot-current' );
+									nav.eq( pos ).addClass( 'nav-dot-current' );
 
 								}
 							} ),
@@ -72,16 +69,16 @@ class SplitSlider extends PageLinesSection {
 							},
 							initEvents = function() {
 
-								$nav.each( function( i ) {
+								nav.each( function( i ) {
 
-									$( this ).on( 'click', function( event ) {
+									jQuery( this ).on( 'click', function( event ) {
 
-										var $dot = $( this );
+										var dot = jQuery( this );
 
 										if( !slitslider.isActive() ) {
 
-											$nav.removeClass( 'nav-dot-current' );
-											$dot.addClass( 'nav-dot-current' );
+											nav.removeClass( 'nav-dot-current' );
+											dot.addClass( 'nav-dot-current' );
 
 										}
 
@@ -112,7 +109,26 @@ class SplitSlider extends PageLinesSection {
 
 		$prefix = ($clone_id) ? '-clone-'.$clone_id : '';
 
-		$slider_height = ( $this->opt( 'split_slider_height', $this->oset ) ) ? $this->opt( 'split_slider_height', $this->oset ) : '600';
+		$slider_height = ( $this->opt( 'split_slider_height' ) ) ? $this->opt( 'split_slider_height' ) : '600';
+
+		$split_slider_array = $this->opt('split_slider_array');
+
+		$format_upgrade_mapping = array(
+			'image'	=> 'split_slider_image_%s',
+			'head'	=> 'split_slider_head_%s',
+			'head_clor'	=> 'split_slider_head_color_%s',
+			'text'	=> 'split_slider_text_%s',
+			'text_color'	=> 'split_slider_text_color_%s',
+			'subtext'	=> 'split_slider_subtext_%s',
+			'subtext_color'	=> 'split_slider_subtext_color_%s'
+		);
+
+		$split_slider_array = $this->upgrade_to_array_format( 'split_slider_array', $split_slider_array, $format_upgrade_mapping, $this->opt('split_slider_slides'));
+
+		// must come after upgrade
+		if( !$split_slider_array || $split_slider_array == 'false' || !is_array($split_slider_array) ){
+			$better_iboxes_array = array( array(), array(), array() );
+		}
 
 		printf('<div id="splitSlider%s" class="sl-slider-wrapper" style="height:%spx;">',$prefix, $slider_height );
 
@@ -120,63 +136,72 @@ class SplitSlider extends PageLinesSection {
 				<div class="sl-slider">
 					<?php
 
-						$slides = ( $this->opt( 'split_slider_slides', $this->oset ) ) ? $this->opt( 'split_slider_slides', $this->oset ) : $this->default_limit;
-
 						$nav_dots = '';
 						$output = '';
-						for ( $i = 1; $i <= $slides; $i++ ) {
 
-							if ($i % 2 == 0) {
-								$orientation = 'vertical';
-							} else {
-								$orientation = 'horizontal';
-							}
+						$i = 1;
 
-							$data_slice1_rotation = rand(-30, 30);
-							$data_slice2_rotation = rand(-30, 30);
-							$data_slice1_scale_num = rand(0, 2);
-							$data_slice2_scale_num = rand(0, 2);
-							$data_slice1_scale_dec = rand(0, 9);
-							$data_slice2_scale_dec = rand(0, 9);
+						if( is_array($split_slider_array) ){
 
-							if ( $this->opt( 'split_slider_image_'.$i, $this->oset ) || $this->opt( 'split_slider_content_'.$i, $this->oset ) ) {
+							$boxes = count( $split_slider_array );
 
-								$the_img = $this->opt( 'split_slider_image_'.$i, $this->oset );
+							foreach( $split_slider_array as $slide ){
 
-								$the_head_color = ( $this->opt( 'split_slider_head_color_'.$i, $this->oset ) ) ? pl_hashify( $this->opt( 'split_slider_head_color_'.$i, $this->oset ) ) : '#ffffff' ;
-
-								$the_head = ( $this->opt( 'split_slider_head_'.$i, $this->tset ) ) ? sprintf( '<h2 data-sync="split_slider_head_%s" style="color:%s;">%s</h2>', $i, $the_head_color, $this->opt( 'split_slider_head_'.$i, $this->tset ) ) : '' ;
-
-								$the_text_color = ( $this->opt( 'split_slider_text_color_'.$i, $this->oset ) ) ? pl_hashify( $this->opt( 'split_slider_text_color_'.$i, $this->oset ) ) : '#ffffff' ;
-
-								$the_text = ( $this->opt( 'split_slider_text_'.$i, $this->tset ) ) ? sprintf( '<p data-sync="split_slider_text_%s" style="color:%s;">%s</p>', $i, $the_text_color, $this->opt( 'split_slider_text_'.$i, $this->tset ) ) : '' ;
-
-								$the_subtext_color = ( $this->opt( 'split_slider_subtext_color_'.$i, $this->oset ) ) ? pl_hashify( $this->opt( 'split_slider_subtext_color_'.$i, $this->oset ) ) : '#000' ;
-
-								$the_subtext = ( $this->opt( 'split_slider_subtext_'.$i, $this->tset ) ) ? sprintf( '<cite data-sync="split_slider_subtext_%s" style="color:%s;">%s</cite>', $i, $the_subtext_color, $this->opt( 'split_slider_subtext_'.$i, $this->tset) ) :'' ;
-
-								if ( $the_head || $the_text || $the_subtext ) {
-									$text = sprintf( '%s<blockquote>%s%s</blockquote>', $the_head, $the_text, $the_subtext );
+								if ($i % 2 == 0) {
+									$orientation = 'vertical';
 								} else {
-									$text = '';
+									$orientation = 'horizontal';
 								}
 
-								$img = ( $the_img ) ? sprintf( '<div class="bg-img" style="background-image: url(%s);">%s</div>', $the_img, $text ) : '' ;
+								$data_slice1_rotation = rand(-30, 30);
+								$data_slice2_rotation = rand(-30, 30);
+								$data_slice1_scale_num = rand(0, 2);
+								$data_slice2_scale_num = rand(0, 2);
+								$data_slice1_scale_dec = rand(0, 9);
+								$data_slice2_scale_dec = rand(0, 9);
 
-								if ( $the_img ) {
-									$output .= sprintf( '<div class="sl-slide" data-orientation="%s" data-slice1-rotation="%s" data-slice2-rotation="%s" data-slice1-scale="%s.%s" data-slice2-scale="%s.%s">%s</div>', $orientation, $data_slice1_rotation, $data_slice2_rotation, $data_slice1_scale_num, $data_slice1_scale_dec, $data_slice2_scale_num, $data_slice2_scale_dec, $img );
-								} else {
-									$output .='';
-								}
+								if ( pl_array_get( 'image', $slide ) ) {
 
-								if ( $output ) {
+									$the_img = pl_array_get( 'image', $slide );
 
-									if ( $i == 1 ) {
-										$nav_dots .= '<span class="nav-dot-current"></span>';
+									$the_head_color = ( pl_array_get( 'head_color', $slide ) ) ? pl_array_get( 'head_color', $slide ) : '#ffffff' ;
+
+									$the_head = ( pl_array_get( 'head', $slide ) ) ? sprintf( '<h2 data-sync="split_slider_array_item%s_head" style="color:%s;">%s</h2>', $i, $the_head_color, pl_array_get( 'head', $slide ) ) : '' ;
+
+									$the_text_color = ( pl_array_get( 'text_color', $slide ) ) ? pl_hashify( pl_array_get( 'text_color', $slide ) ) : '#ffffff' ;
+
+									$the_text = ( pl_array_get( 'text', $slide ) ) ? sprintf( '<p data-sync="split_slider_array_item%s_text" style="color:%s;">%s</p>', $i, $the_text_color, pl_array_get( 'text', $slide ) ) : '' ;
+
+									$the_subtext_color = ( pl_array_get( 'subtext_color', $slide ) ) ? pl_hashify( pl_array_get( 'subtext_color', $slide ) ) : '#000' ;
+
+									$the_subtext = ( pl_array_get( 'subtext', $slide ) ) ? sprintf( '<cite data-sync="split_slider_array_item%s_subtext" style="color:%s;">%s</cite>', $i, $the_subtext_color, pl_array_get( 'subtext', $slide )) :'' ;
+
+									if ( $the_head || $the_text || $the_subtext ) {
+										$text = sprintf( '%s<blockquote>%s%s</blockquote>', $the_head, $the_text, $the_subtext );
 									} else {
-										$nav_dots .= '<span></span>';
+										$text = '';
+									}
+
+									$img = ( $the_img ) ? sprintf( '<div class="bg-img" style="background-image: url(%s);">%s</div>', $the_img, $text ) : '' ;
+
+									if ( $the_img ) {
+										$output .= sprintf( '<div class="sl-slide" data-orientation="%s" data-slice1-rotation="%s" data-slice2-rotation="%s" data-slice1-scale="%s.%s" data-slice2-scale="%s.%s">%s</div>', $orientation, $data_slice1_rotation, $data_slice2_rotation, $data_slice1_scale_num, $data_slice1_scale_dec, $data_slice2_scale_num, $data_slice2_scale_dec, $img );
+									} else {
+										$output .='';
+									}
+
+									if ( $output ) {
+
+										if ( $i == 1 ) {
+											$nav_dots .= '<span class="nav-dot-current"></span>';
+										} else {
+											$nav_dots .= '<span></span>';
+										}
 									}
 								}
+
+								$i++;
+
 							}
 						}
 
@@ -245,127 +270,129 @@ class SplitSlider extends PageLinesSection {
 
 	}
 
-	function section_optionator( $settings ) {
+	function section_opts(){
 
-		$settings = wp_parse_args( $settings, $this->optionator_default );
+		$options = array();
 
-		$array = array();
+		$how_to_use = __( '
+		<strong>Read the instructions below before asking for additional help:</strong>
+		</br></br>
+		<strong>1.</strong> In the frontend editor, drag the Split Slider section to a template of your choice.
+		</br></br>
+		<strong>2.</strong> Edit settings for Split Slider.
+		</br></br>
+		<strong>3.</strong> When you are done, hit "Publish" to see changes.
+		</br></br>
+		<div class="row zmb">
+				<div class="span6 tac zmb">
+					<a class="btn btn-info" href="http://forum.pagelines.com/71-products-by-aleksander-hansson/" target="_blank" style="padding:4px 0 4px;width:100%"><i class="icon-ambulance"></i>          Forum</a>
+				</div>
+				<div class="span6 tac zmb">
+					<a class="btn btn-info" href="http://betterdms.com" target="_blank" style="padding:4px 0 4px;width:100%"><i class="icon-align-justify"></i>          Better DMS</a>
+				</div>
+			</div>
+			<div class="row zmb" style="margin-top:4px;">
+				<div class="span12 tac zmb">
+					<a class="btn btn-success" href="http://shop.ahansson.com" target="_blank" style="padding:4px 0 4px;width:100%"><i class="icon-shopping-cart" ></i>          My Shop</a>
+				</div>
+			</div>
+		', 'split-slider' );
 
-		$array['split_slider_settings'] = array(
-			'type'    => 'multi_option',
-			'title'   => __( 'Settings', 'SplitSlider' ),
-			'selectvalues' => array(
+		$options[] = array(
+			'key' => 'split_slider_help',
+			'type'     => 'template',
+			'template'      => do_shortcode( $how_to_use ),
+			'title' =>__( 'How to use:', 'split-slider' ) ,
+		);
 
-				'split_slider_slides' => array(
-					'type'    => 'count_select',
-					'count_start' => 2,
-					'count_number'  => 15,
-					'default'  => '2',
-					'inputlabel'  => __( 'Number of Images to Configure', 'SplitSlider' ),
-					'title'   => __( 'Number of images', 'SplitSlider' ),
-					'shortexp'   => __( 'Enter the number of Split Slider slides. <strong>Minimum is 2</strong>', 'SplitSlider' ),
-					'exp'    => __( "This number will be used to generate slides and option setup. For best results, please use images with the same dimensions!", 'SplitSlider' ),
-				),
-
-				'split_slider_autoplay'  => array(
-					'default'       => 'y',
-					'type'           => 'select',
-					'selectvalues'     => array(
-						'y' => array( 'name' => __( 'Yes'   , 'SplitSlider' )),
-						'n' => array( 'name' => __( 'No'   , 'SplitSlider' ))
+		$options[] = array(
+			'key' => 'split_slider_settings',
+			'type'  => 'multi',
+			'title'  => __( 'Settings', 'split-slider' ),
+			'opts' => array(
+				array(
+					'key' => 'split_slider_autoplay',
+					'default'    => 'y',
+					'type'      => 'select',
+					'opts'   => array(
+						'y' => array( 'name' => __( 'Yes'  , 'split-slider' )),
+						'n' => array( 'name' => __( 'No'  , 'split-slider' ))
 					),
-					'inputlabel'  =>  __('Autoplay Split Slider? (Default is "Yes")', 'SplitSlider'),
-					'title'      => __( 'Autoplay', 'SplitSlider' ),
-					'shortexp'      => __( 'Do you want Split Slider to autoplay?', 'SplitSlider' )
+					'label' => __('Autoplay Split Slider? (Default is "Yes")', 'split-slider'),
+					'help'   => __( 'Do you want Split Slider to autoplay?', 'split-slider' )
 				),
 
-				'split_slider_speed'  => array(
-					'default'       => '',
-					'type'           => 'text',
-					'inputlabel'  =>  __('Speed of animation? (Default is "1200")', 'SplitSlider'),
-					'title'      => __( 'Speed', 'SplitSlider' ),
-					'shortexp'      => __( 'How fast should Split Slider animate?', 'SplitSlider' )
+				array(
+					'key' => 'split_slider_speed',
+					'default'    => '',
+					'type'      => 'text',
+					'label' => __('Speed of animation? (Default is "1200")', 'split-slider'),
+					'help'   => __( 'How fast should Split Slider animate?', 'split-slider' )
 				),
 
-				'split_slider_height'  => array(
-					'default'       => '400',
-					'type'           => 'text',
-					'inputlabel'  =>  __('Height of Split Slider? (Default is "400")', 'SplitSlider'),
-					'title'      => __( 'Height', 'SplitSlider' ),
-					'shortexp'      => __( 'Input the height of the Split Slider', 'SplitSlider' )
+				array(
+					'key' => 'split_slider_height',
+					'default'    => '400',
+					'type'      => 'text',
+					'label' => __('Height of Split Slider? (Default is "400")', 'split-slider'),
+					'help'   => __( 'Input the height of the Split Slider', 'split-slider' )
 				),
 			),
+
 		);
 
-		global $post_ID;
-
-		$oset = array( 'post_id' => $post_ID, 'clone_id' => $settings['clone_id'], 'type' => $settings['type'] );
-
-		$slides = ( $this->opt( 'split_slider_slides', $this->oset ) ) ? $this->opt( 'split_slider_slides', $oset ) : $this->default_limit;
-
-		for ( $i = 1; $i <= $slides; $i++ ) {
-
-			$array['split_slider_slide_'.$i] = array(
-				'type'    => 'multi_option',
-				'selectvalues' => array(
-
-					'split_slider_image_'.$i  => array(
-						'inputlabel'  => __( 'Slide Image', 'SplitSlider' ),
-						'type'   => 'image_upload',
-						'title'   => __( 'Slide Image ', 'SplitSlider' ) . $i,
-						'shortexp'   => __( 'Upload an image...', 'SplitSlider' )
-
-					),
-					'split_slider_head_'.$i  => array(
-						'inputlabel' => __( 'Slide Heading', 'SplitSlider' ),
-						'type'   => 'text',
-						'title'   => __( 'Slide Heading ', 'SplitSlider' ) . $i,
-					),
-					'split_slider_head_color_'.$i  => array(
-						'inputlabel' => __( 'Color', 'SplitSlider' ),
-						'type'   => 'colorpicker',
-						'shortexp'   => __( 'Setup Slide Heading', 'SplitSlider' )
-
-					),
-					'split_slider_text_'.$i  => array(
-						'inputlabel' => __( 'Slide Text', 'SplitSlider' ),
-						'type'   => 'text',
-						'title'   => __( 'Slide Text ', 'SplitSlider' ) . $i,
-					),
-					'split_slider_text_color_'.$i  => array(
-						'inputlabel' => __( 'Color', 'SplitSlider' ),
-						'type'   => 'colorpicker',
-						'shortexp'   => __( 'Setup Slide Text', 'SplitSlider' )
-
-					),
-					'split_slider_subtext_'.$i  => array(
-						'inputlabel' => __( 'Slide Subtext', 'SplitSlider' ),
-						'type'   => 'text',
-						'title'   => __( 'Slide Subtext ', 'SplitSlider' ) . $i,
-					),
-					'split_slider_subtext_color_'.$i  => array(
-						'inputlabel' => __( 'Color', 'SplitSlider' ),
-						'type'   => 'colorpicker',
-						'shortexp'   => __( 'Setup Slide Subtext', 'SplitSlider' )
-					),
+		$options[] = array(
+			'key'		=> 'split_slider_array',
+	    	'type'		=> 'accordion',
+			'title'		=> __('Split Slider Setup', 'better-iboxes'),
+			'post_type'	=> __('Slide', 'better-iboxes'),
+			'opts'	=> array(
+				array(
+					'key' => 'image',
+					'label' => __( 'Slide Image', 'split-slider' ),
+					'type'  => 'image_upload',
+					'help'  => __( 'Upload an image...', 'split-slider' )
 				),
-				'title'   => __( 'Split Slider Slide ', 'SplitSlider' ) . $i,
-				'shortexp'   => __( 'Setup options for slide number ', 'SplitSlider' ) . $i,
-				'exp'   => __( 'For best results all images in the slider should have the same dimensions.', 'SplitSlider' )
-			);
+				array(
+					'key' => 'head',
+					'label' => __( 'Slide Heading', 'split-slider' ),
+					'type'  => 'text',
+				),
+				array(
+					'key' => 'head_color',
+					'label' => __( 'Color', 'split-slider' ),
+					'type'  => 'color',
+					'help'  => __( 'Setup Slide Heading', 'split-slider' )
+				),
+				array(
+					'key' => 'text',
+					'label' => __( 'Slide Text', 'split-slider' ),
+					'type'  => 'text',
+					'title'  => __( 'Slide Text ', 'split-slider' ),
+				),
+				array(
+					'key' => 'text_color',
+					'label' => __( 'Color', 'split-slider' ),
+					'type'  => 'color',
+					'help'  => __( 'Setup Slide Text', 'split-slider' )
 
-		}
-
-		$metatab_settings = array(
-			'id'   => 'split_slider_options',
-			'name'   => __( 'Split Slider', 'SplitSlider' ),
-			'icon'   => $this->icon,
-			'clone_id' => $settings['clone_id'],
-			'active' => $settings['active']
+				),
+				array(
+					'key' => 'subtext',
+					'label' => __( 'Slide Subtext', 'split-slider' ),
+					'type'  => 'text',
+					'title'  => __( 'Slide Subtext ', 'split-slider' ),
+				),
+				array(
+					'key' => 'subtext_color',
+					'label' => __( 'Color', 'split-slider' ),
+					'type'  => 'color',
+					'help'  => __( 'Setup Slide Subtext', 'split-slider' )
+				),
+			)
 		);
 
-		register_metatab( $metatab_settings, $array );
-
+		return $options;
 	}
 
 }
